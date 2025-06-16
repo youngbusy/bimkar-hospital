@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class JanjiPeriksa extends Model
-{
+{   
     //
     use HasFactory; 
  
@@ -24,10 +27,10 @@ class JanjiPeriksa extends Model
     public function jadwalPeriksa():BelongsTo 
     { 
         return $this->belongsTo(JadwalPeriksa::class, 'id_jadwal_periksa'); 
-    } 
- 
-    public function periksa():HasOne 
-    { 
-        return $this->hasOne(Periksa::class, 'id_janji_periksa'); 
+    }
+
+    public function periksa():HasOne
+    {
+        return $this->hasOne(Periksa::class, 'id_janji_periksa');
     }
 }

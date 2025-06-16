@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Dokter;
 
 use App\Http\Controllers\Controller;
 use App\Models\Obat;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request; 
 
 class ObatController extends Controller
 {
