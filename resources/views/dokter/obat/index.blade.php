@@ -26,146 +26,204 @@
                             </p>
                         @endif
                     </div>
+                </header>
 
-                    <!-- Modal Tambah -->
-                    <div class="modal fade bd-example-modal-lg" id="createObatModal" tabindex="-1" role="dialog" aria-labelledby="obatModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                            <div class="modal-content">
-
-                                <div class="modal-header">
-                                    <div>
-                                        <h5 class="modal-title font-weight-bold">Tambah Obat</h5>
-                                        <p class="mt-1 text-sm text-gray-600">Isi form berikut untuk menambahkan obat baru.</p>
+                <!-- Modal Tambah Obat -->
+                <div class="modal fade bd-example-modal-lg" id="createObatModal" tabindex="-1" role="dialog" aria-labelledby="obatModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <div>
+                                    <h5 class="modal-title font-weight-bold">Tambah Obat</h5>
+                                    <p class="mt-1 text-sm text-gray-600">Isi form berikut untuk menambahkan obat baru.</p>
+                                </div>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="formObat" action="{{ route('dokter.obat.store') }}" method="POST">
+                                    @csrf
+                                    <div class="mb-3 form-group">
+                                        <label for="nama_obat">Nama Obat</label>
+                                        <input type="text" name="nama_obat" class="form-control" required>
                                     </div>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-
-                                <div class="modal-body">
-                                    <form id="formObat" action="{{ route('dokter.obat.store') }}" method="POST">
-                                        @csrf
-                                        <div class="mb-3 form-group">
-                                            <label for="nama_obat">Nama Obat</label>
-                                            <input type="text" name="nama_obat" class="form-control" required>
-                                        </div>
-
-                                        <div class="mb-3 form-group">
-                                            <label for="kemasan">Kemasan</label>
-                                            <input type="text" name="kemasan" class="form-control" required>
-                                        </div>
-
-                                        <div class="mb-4 form-group">
-                                            <label for="harga">Harga</label>
-                                            <input type="number" name="harga" class="form-control" required min="0">
-                                        </div>
-                                    </form>
-                                </div>
-
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                                    <button type="button" class="btn btn-primary"
-                                        onclick="document.getElementById('formObat').submit();" data-dismiss="modal">
-                                        Simpan
-                                    </button>
-                                </div>
+                                    <div class="mb-3 form-group">
+                                        <label for="kemasan">Kemasan</label>
+                                        <input type="text" name="kemasan" class="form-control" required>
+                                    </div>
+                                    <div class="mb-4 form-group">
+                                        <label for="harga">Harga</label>
+                                        <input type="number" name="harga" class="form-control" required min="0">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                                <button type="button" class="btn btn-primary"
+                                    onclick="document.getElementById('formObat').submit();" data-dismiss="modal">
+                                    Simpan
+                                </button>
                             </div>
                         </div>
                     </div>
-                </header>
+                </div>
 
-                <table class="table mt-6 overflow-hidden rounded table-hover">
-                    <thead class="thead-light">
-                        <tr>
-                            <th>No</th>
-                            <th>Nama Obat</th>
-                            <th>Kemasan</th>
-                            <th>Harga</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($obats as $obat)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $obat->nama_obat }}</td>
-                                <td>{{ $obat->kemasan }}</td>
-                                <td>Rp {{ number_format($obat->harga, 0, ',', '.') }}</td>
-                                <td>
-                                    <!-- Tombol Edit -->
-                                    <button type="button" class="btn btn-sm btn-warning text-white"
-                                            data-toggle="modal" data-target="#editObatModal{{ $obat->id }}">
-                                        Edit
-                                    </button>
+                <!-- Tab Navigasi -->
+                <ul class="nav nav-tabs mt-4 mb-4" id="obatTabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="aktif-tab" data-toggle="tab" href="#aktif" role="tab">Obat Aktif</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="terhapus-tab" data-toggle="tab" href="#terhapus" role="tab">Obat Terhapus</a>
+                    </li>
+                </ul>
 
-                                    <!-- Modal Edit -->
-                                    <div class="modal fade" id="editObatModal{{ $obat->id }}" tabindex="-1" role="dialog"
-                                         aria-labelledby="editModalLabel{{ $obat->id }}" aria-hidden="true">
-                                        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <div>
-                                                        <h5 class="modal-title font-weight-bold">Edit Obat</h5>
-                                                        <p class="mt-1 text-sm text-gray-600">Perbarui informasi obat di bawah ini.</p>
+                <div class="tab-content" id="obatTabContent">
+                    <!-- Tab Obat Aktif -->
+                    <div class="tab-pane fade show active" id="aktif" role="tabpanel" aria-labelledby="aktif-tab">
+                        <table class="table mt-6 overflow-hidden rounded table-hover">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Obat</th>
+                                    <th>Kemasan</th>
+                                    <th>Harga</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($obats as $obat)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $obat->nama_obat }}</td>
+                                        <td>{{ $obat->kemasan }}</td>
+                                        <td>Rp {{ number_format($obat->harga, 0, ',', '.') }}</td>
+                                        <td>
+                                            <!-- Edit -->
+                                            <button type="button" class="btn btn-sm btn-warning text-white"
+                                                    data-toggle="modal" data-target="#editObatModal{{ $obat->id }}">
+                                                Edit
+                                            </button>
+
+                                            <!-- Modal Edit -->
+                                            <div class="modal fade" id="editObatModal{{ $obat->id }}" tabindex="-1" role="dialog"
+                                                aria-labelledby="editModalLabel{{ $obat->id }}" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <div>
+                                                                <h5 class="modal-title font-weight-bold">Edit Obat</h5>
+                                                                <p class="mt-1 text-sm text-gray-600">Perbarui informasi obat di bawah ini.</p>
+                                                            </div>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form id="formEdit{{ $obat->id }}" action="{{ route('dokter.obat.update', $obat) }}" method="POST">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <div class="mb-3 form-group">
+                                                                    <label for="nama_obat">Nama Obat</label>
+                                                                    <input type="text" name="nama_obat" class="form-control" value="{{ $obat->nama_obat }}" required>
+                                                                </div>
+                                                                <div class="mb-3 form-group">
+                                                                    <label for="kemasan">Kemasan</label>
+                                                                    <input type="text" name="kemasan" class="form-control" value="{{ $obat->kemasan }}" required>
+                                                                </div>
+                                                                <div class="mb-4 form-group">
+                                                                    <label for="harga">Harga</label>
+                                                                    <input type="number" name="harga" class="form-control" value="{{ $obat->harga }}" required min="0">
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                                                            <button type="button" class="btn btn-primary"
+                                                                onclick="document.getElementById('formEdit{{ $obat->id }}').submit();" data-dismiss="modal">
+                                                                Simpan Perubahan
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-
-                                                <div class="modal-body">
-                                                    <form id="formEdit{{ $obat->id }}" action="{{ route('dokter.obat.update', $obat) }}" method="POST">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <div class="mb-3 form-group">
-                                                            <label for="nama_obat">Nama Obat</label>
-                                                            <input type="text" name="nama_obat" class="form-control" value="{{ $obat->nama_obat }}" required>
-                                                        </div>
-
-                                                        <div class="mb-3 form-group">
-                                                            <label for="kemasan">Kemasan</label>
-                                                            <input type="text" name="kemasan" class="form-control" value="{{ $obat->kemasan }}" required>
-                                                        </div>
-
-                                                        <div class="mb-4 form-group">
-                                                            <label for="harga">Harga</label>
-                                                            <input type="number" name="harga" class="form-control" value="{{ $obat->harga }}" required min="0">
-                                                        </div>
-                                                    </form>
-                                                </div>
-
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                                                    <button type="button" class="btn btn-primary"
-                                                        onclick="document.getElementById('formEdit{{ $obat->id }}').submit();"
-                                                        data-dismiss="modal">
-                                                        Simpan Perubahan
-                                                    </button>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
 
-                                    <!-- Tombol Hapus -->
-                                    <form action="{{ route('dokter.obat.destroy', $obat) }}" method="POST" class="d-inline"
-                                          onsubmit="return confirm('Yakin ingin menghapus obat ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="text-center text-gray-500">Tidak ada data obat.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                                            <!-- Hapus -->
+                                            <form action="{{ route('dokter.obat.destroy', $obat) }}" method="POST" class="d-inline"
+                                                  onsubmit="return confirm('Yakin ingin menghapus obat ini?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="text-center text-gray-500">Tidak ada data obat.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
 
-                <div class="mt-4">
-                    {{ $obats->links() }}
-                </div>
+                        <div class="mt-4">
+                            {{ $obats->links() }}
+                        </div>
+                    </div>
+
+                    <!-- Tab Obat Terhapus -->
+                    <div class="tab-pane fade" id="terhapus" role="tabpanel" aria-labelledby="terhapus-tab">
+                    @if ($obatTerhapus->count())
+                        <form action="{{ route('dokter.obat.restoreAll') }}" method="POST" class="mb-3">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Pulihkan semua obat yang terhapus?')">
+                                Pulihkan Semua
+                            </button>
+                        </form>
+                    @endif
+
+                        <table class="table mt-6 overflow-hidden rounded table-hover">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Obat</th>
+                                    <th>Kemasan</th>
+                                    <th>Harga</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($obatTerhapus as $obat)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $obat->nama_obat }}</td>
+                                        <td>{{ $obat->kemasan }}</td>
+                                        <td>Rp {{ number_format($obat->harga, 0, ',', '.') }}</td>
+                                        <td>
+                                            <!-- Restore -->
+                                            <form action="{{ route('dokter.obat.restore', $obat->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                <button type="submit" class="btn btn-sm btn-success">Pulihkan</button>
+                                            </form>
+
+                                            <!-- Force Delete -->
+                                            <form action="{{ route('dokter.obat.forceDelete', $obat->id) }}" method="POST" class="d-inline"
+                                                  onsubmit="return confirm('Yakin ingin menghapus permanen obat ini?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger">Hapus Permanen</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="text-center text-gray-500">Tidak ada obat terhapus.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div> <!-- akhir tab-content -->
             </div>
         </div>
     </div>

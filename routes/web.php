@@ -40,6 +40,9 @@ Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->group(function () 
     Route::get('/obat/{obat}/edit', [App\Http\Controllers\Dokter\ObatController::class, 'edit'])->name('dokter.obat.edit');
     Route::put('/obat/{obat}', [App\Http\Controllers\Dokter\ObatController::class, 'update'])->name('dokter.obat.update');
     Route::delete('/obat/{obat}', [App\Http\Controllers\Dokter\ObatController::class, 'destroy'])->name('dokter.obat.destroy');
+    Route::post('/obat/{id}/restore', [App\Http\Controllers\Dokter\ObatController::class, 'restore'])->name('dokter.obat.restore');
+    Route::delete('/obat/{id}/force-delete', [App\Http\Controllers\Dokter\ObatController::class, 'forceDelete'])->name('dokter.obat.forceDelete');
+    Route::post('/obat/restore-all', [App\Http\Controllers\Dokter\ObatController::class, 'restoreAll'])->name('dokter.obat.restoreAll');
 }); 
  
 Route::middleware(['auth', 'role:pasien'])->prefix('pasien')->group(function () { 
